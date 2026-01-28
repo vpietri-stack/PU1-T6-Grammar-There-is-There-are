@@ -1,0 +1,172 @@
+/* Custom styles for Drag and Drop mechanics */
+body {
+    touch-action: pan-y;
+    user-select: none;
+    -webkit-user-select: none;
+    background: linear-gradient(135deg, #E0F7FA 0%, #E1BEE7 100%);
+    font-family: 'Fredoka', sans-serif;
+    color: #475569;
+    overflow: hidden;
+}
+
+.scrollable-content {
+    height: 100%;
+    overflow-y: auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+}
+
+.draggable-item {
+    touch-action: none;
+    cursor: grab;
+    transition: transform 0.1s, box-shadow 0.1s;
+    background-color: #FF8A65;
+    color: white;
+    border-bottom: 4px solid #D84315;
+    text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.1);
+    display: inline-block;
+    position: relative;
+    z-index: 10;
+    margin: 4px;
+}
+
+.draggable-item:active {
+    cursor: grabbing;
+    transform: translateY(4px) scale(0.98);
+    border-bottom: 0px solid transparent;
+    margin-bottom: 4px;
+}
+
+.drop-zone {
+    display: inline-block;
+    min-width: 120px;
+    min-height: 45px;
+    margin: 4px 8px;
+    border: 3px dashed #90A4AE;
+    background-color: rgba(255, 255, 255, 0.6);
+    vertical-align: middle;
+    border-radius: 12px;
+    transition: all 0.2s;
+    text-align: center;
+    line-height: 40px;
+    font-weight: 600;
+    color: #546E7A;
+    padding: 0 10px;
+}
+
+.drop-zone.highlight {
+    background-color: #FFF9C4;
+    border-color: #FFD54F;
+    transform: scale(1.05);
+}
+
+.drop-zone.filled {
+    border: none;
+    background-color: transparent;
+}
+
+.drop-zone.correct .draggable-item {
+    background-color: #66BB6A !important;
+    border-bottom-color: #2E7D32 !important;
+}
+
+.drop-zone.incorrect .draggable-item {
+    background-color: #EF5350 !important;
+    border-bottom-color: #C62828 !important;
+    animation: shake 0.5s;
+}
+
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
+    100% { transform: translateX(0); }
+}
+
+.drag-clone {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.9;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    transform: translate(-50%, -50%) scale(1.1) rotate(-3deg);
+    background-color: #FF8A65;
+    color: white;
+    padding: 8px 20px;
+    border-radius: 12px;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: bold;
+    font-size: 1.1rem;
+    border-bottom: 4px solid #D84315;
+}
+
+.sentence-container {
+    line-height: 1.5;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    align-items: center;
+    width: 100%;
+}
+
+.sentence-line {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.7);
+    padding: 10px;
+    border-radius: 15px;
+    width: 100%;
+    border: 2px solid #e2e8f0;
+}
+
+.clue-text {
+    font-size: 1.1rem;
+    color: #334155;
+    text-align: center;
+    font-weight: 500;
+}
+
+.fun-btn {
+    background-color: #29B6F6;
+    border-bottom: 5px solid #0288D1;
+    transition: all 0.1s;
+}
+
+.fun-btn:active {
+    transform: translateY(5px);
+    border-bottom: 0px;
+}
+
+.check-btn {
+    background-color: #8E24AA;
+    border-bottom: 5px solid #4A148C;
+}
+
+.check-btn:active {
+    transform: translateY(5px);
+    border-bottom: 0px;
+}
+
+/* Phaser Game Container */
+#phaser-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 50;
+    display: none;
+}
+
+#phaser-container canvas {
+    display: block;
+    margin: 0 auto;
+}
