@@ -26,10 +26,12 @@ class ArcadeScene extends Phaser.Scene {
     }
 
     create() {
+        this.scale.on('resize', this.handleResize, this);
+
         this.physics.world.setBounds(0, 0, this.scale.width, this.scale.height);
 
         // Starfield
-        this.add.rectangle(0, 0, this.scale.width, this.scale.height, 0x000000).setOrigin(0).setDepth(-1);
+        // Starfield background
         this.createStarfield();
 
         // Player
@@ -52,6 +54,54 @@ class ArcadeScene extends Phaser.Scene {
         this.configureShip();
         this.createUI();
         this.createStartScreen();
+
+        // Initial layout set
+        this.handleResize(this.scale);
+    }
+
+    handleResize(gameSize) {
+        const width = gameSize.width;
+        const height = gameSize.height;
+
+        this.cameras.main.setViewport(0, 0, width, height);
+        this.physics.world.setBounds(0, 0, width, height);
+
+        if (this.player) {
+            this.player.y = height - 50;
+            this.player.x = Phaser.Math.Clamp(this.player.x, 20, width - 20);
+        }
+
+        if (this.scoreText) {
+            this.scoreText.setPosition(20, 20);
+            this.livesText.setPosition(width / 2, 20);
+            this.timeText.setPosition(width - 20, 20);
+        }
+
+        if (this.startContainer && this.startContainer.visible) {
+            this.updateContainerPositions(this.startContainer, width, height);
+        }
+
+        if (this.endContainer && this.endContainer.visible) {
+            this.updateContainerPositions(this.endContainer, width, height);
+        }
+    }
+
+    updateContainerPositions(container, width, height) {
+        const children = container.list;
+        // Background usually at index 0
+        if (children[0] instanceof Phaser.GameObjects.Rectangle) {
+            children[0].setSize(width, height);
+            children[0].setPosition(width / 2, height / 2);
+        }
+
+        // Title/labels are centered usually
+        children.forEach(child => {
+            if (child.type === 'Text') {
+                child.x = width / 2;
+                // Keep relative vertical spacing if it was designed for e.g. 600 height
+                // or just keep them centered grouped.
+            }
+        });
     }
 
     createStarfield() {
@@ -66,10 +116,13 @@ class ArcadeScene extends Phaser.Scene {
             star.alpha = Phaser.Math.FloatBetween(0.2, 0.8);
             this.tweens.add({
                 targets: star,
-                y: this.scale.height + 10,
-                duration: Phaser.Math.Between(2000, 5000),
+                y: { from: star.y, to: 2000 }, // Travel far beyond screen
+                duration: Phaser.Math.Between(4000, 10000),
                 repeat: -1,
-                onRepeat: () => { star.y = -10; star.x = Phaser.Math.Between(0, this.scale.width); }
+                onRepeat: () => {
+                    star.y = -10;
+                    star.x = Phaser.Math.Between(0, this.scale.width);
+                }
             });
         }
     }
@@ -130,11 +183,13 @@ class ArcadeScene extends Phaser.Scene {
         }).setOrigin(0.5).setInteractive({ useHandCursor: true });
 
         btn.on('pointerdown', () => {
-            this.startContainer.setVisible(false);
+            this.startContainer.destroy();
+            this.startContainer = null;
             this.startGame();
         });
 
         this.startContainer.add([bg, title, info, btn]);
+        this.handleResize(this.scale); // Update positions immediately
     }
 
     startGame() {

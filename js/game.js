@@ -19,14 +19,14 @@ function launchPhaserArcade() {
     // Create Phaser game config
     const config = {
         type: Phaser.AUTO,
-        width: 800,
-        height: 600,
-        backgroundColor: '#000000',
         parent: 'phaser-container',
         scale: {
-            mode: Phaser.Scale.FIT,
-            autoCenter: Phaser.Scale.CENTER_BOTH
+            mode: Phaser.Scale.RESIZE,
+            autoCenter: Phaser.Scale.CENTER_BOTH,
+            width: '100%',
+            height: '100%'
         },
+        backgroundColor: '#000000',
         physics: {
             default: 'arcade',
             arcade: {
